@@ -1,0 +1,289 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<GettitUser> SignInManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Gettit.Web</title>
+    <script type="importmap"></script>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/Gettit.Web.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/trix@2.0.8/dist/trix.css">
+    <script type="text/javascript" src="https://unpkg.com/trix@2.0.8/dist/trix.umd.min.js"></script>
+</head>
+<body>
+    <div class="container-fluid ps-4">
+        <header id="topbar" class="mt-3">
+            <div id="topbar-logo-container" class="d-flex justify-content-center">
+                <div id="logo">
+                    <a href="/">
+                        <img width="100px" height="60px" src="~/images/gettit-logo.png" />
+                    </a>
+                </div>
+            </div>
+            <div id="topbar-actions-container" class="d-flex justify-content-between">
+                <div id="search">
+                    <div class="form-group w-100 d-flex justify-content-center">
+                        <input class="form-control" placeholder="Search threads...">
+                    </div>
+                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <div id="actions" class="d-flex justify-content-end">
+                        <a href="/Thread/Create" id="post-thread-button">
+                            <img src="~/images/post.svg" width="25px" height="25px">
+                        </a>
+
+                        <div id="layout-profile">
+                        </div>
+                    </div>
+                }
+            </div>
+        </header>
+        <main class="d-flex justify-content-start">
+            <aside id="sidebar">
+                <div class="sidebar-navigation-category d-flex justify-content-between">
+                    <h3>Recent</h3>
+                    <img class="sidebar-navigation-category-arrow-down" src="~/images/angle-down.svg" width="25px" height="25px">
+                    <img class="sidebar-navigation-category-arrow-up" src="~/images/angle-up.svg" width="25px" height="25px">
+                </div>
+                <div class="sidebar-navigation-category-content">
+                    <div class="sidebar-recent-topic-list">
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                        <div class="sidebar-recent-topic d-flex justify-content-start">
+                            <div class="sidebar-recent-topic-thread-picture mt-2">
+                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                            </div>
+                            <div class="sidebar-recent-topic-thread-data ms-2">
+                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
+                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Recent threads that have been opened -->
+                <hr class="sidebar-navigation-category-separator" />
+                <div class="sidebar-navigation-category d-flex justify-content-between">
+                    <h3>Topics</h3>
+                    <img class="sidebar-navigation-category-arrow-down" src="~/images/angle-down.svg" width="25px" height="25px">
+                    <img class="sidebar-navigation-category-arrow-up" src="~/images/angle-up.svg" width="25px" height="25px">
+                </div>
+                <div class="sidebar-navigation-category-content">
+                    <div class="sidebar-popular-tags">
+                        <div class="sidebar-popular-tag">#meme</div>
+                        <div class="sidebar-popular-tag">#cheeseburger</div>
+                        <div class="sidebar-popular-tag">#technology</div>
+                        <div class="sidebar-popular-tag">#gaming</div>
+                        <div class="sidebar-popular-tag">#fitness</div>
+                        <div class="sidebar-popular-tag">#health</div>
+                        <div class="sidebar-popular-tag">#travel</div>
+                        <div class="sidebar-popular-tag">#photography</div>
+                        <div class="sidebar-popular-tag">#food</div>
+                        <div class="sidebar-popular-tag">#programming</div>
+                        <div class="sidebar-popular-tag">#webdevelopment</div>
+                        <div class="sidebar-popular-tag">#ai</div>
+                        <div class="sidebar-popular-tag">#science</div>
+                        <div class="sidebar-popular-tag">#education</div>
+                        <div class="sidebar-popular-tag">#movies</div>
+                        <div class="sidebar-popular-tag">#music</div>
+                        <div class="sidebar-popular-tag">#sports</div>
+                        <div class="sidebar-popular-tag">#business</div>
+                        <div class="sidebar-popular-tag">#finance</div>
+                        <div class="sidebar-popular-tag">#relationships</div>
+                        <div class="sidebar-popular-tag">#parenting</div>
+                        <div class="sidebar-popular-tag">#news</div>
+                        <div class="sidebar-popular-tag">#chatgpt</div>
+                        <div class="sidebar-popular-tag">#tortila</div>
+                        <div class="sidebar-popular-tag">#dyuner</div>
+                    </div>
+                </div>
+                <!-- sub-categories with top 25 (if existent) popular tags -->
+
+                <hr class="sidebar-navigation-category-separator" />
+                <div class="sidebar-navigation-category d-flex justify-content-between">
+                    <h3>Other</h3>
+                    <img class="sidebar-navigation-category-arrow-down" src="~/images/angle-down.svg" width="25px" height="25px">
+                    <img class="sidebar-navigation-category-arrow-up" src="~/images/angle-up.svg" width="25px" height="25px">
+                </div>
+                <div class="sidebar-navigation-category-content">
+                    <div class="sidebar-other-links">
+                        <div class="sidebar-other-link">About</div>
+                        <div class="sidebar-other-link">Privacy Policy</div>
+                    </div>
+                </div>
+                <!-- Navigation items (about / etc.) -->
+
+                <partial name="_LoginPartial" />
+            </aside>
+            <main id="main-content">
+                @RenderBody()
+            </main>
+            <section id="to-be-defined">
+                <!-- LEADERBAORD ?!?!? -->
+            </section>
+        </main>
+    </div>
+    <script>
+        [...document.querySelectorAll('.sidebar-navigation-category')]
+        .forEach(el => el.addEventListener('click', function () {
+            if(![...this.classList].includes('sidebar-navigation-category-expanded')) {
+                this.querySelector('.sidebar-navigation-category-arrow-down')
+                .classList
+                .add('sidebar-navigation-category-arrow-down-transform');
+                this.classList.add('sidebar-navigation-category-expanded');
+                this.nextElementSibling.style.overflow = 'auto';
+                this.nextElementSibling.style.height = (this.nextElementSibling.children[0].clientHeight + 30) + 'px';
+            } else {
+                this.querySelector('.sidebar-navigation-category-arrow-down')
+                .classList
+                .remove('sidebar-navigation-category-arrow-down-transform');
+                this.classList.remove('sidebar-navigation-category-expanded');
+                this.nextElementSibling.style.overflow = 'hidden';
+                this.nextElementSibling.style.height = "0px";
+            }
+        }));
+    </script>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

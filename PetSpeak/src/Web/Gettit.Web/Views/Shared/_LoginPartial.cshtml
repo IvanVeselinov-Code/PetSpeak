@@ -1,0 +1,19 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<GettitUser> SignInManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="sidebar-bottom">
+        <div class="sidebar-bottom-button h3">
+            <a id="sidebar-signin" href="/Identity/Account/Logout">Sing out</a>
+        </div>
+    </div>
+}
+else
+{
+    <div class="sidebar-bottom">
+        <div class="sidebar-bottom-button h3">
+            <a id="sidebar-signin" href="/Identity/Account/Login">Sing in</a>
+        </div>
+    </div>
+}
