@@ -1,0 +1,166 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@foreach (var thread in (List<PetSpeakThreadServiceModel>)ViewData["Threads"])
+{
+    <div class="page-thread d-flex flex-column">
+        <div class="page-thread-attachment-container" hidden>
+            @foreach (var item in thread.Attachments)
+            {
+                var itemCloudUrl = item.CloudUrl;
+                var itemCloudUrlSplit = itemCloudUrl.Split(":");
+                var itemFileName = itemCloudUrlSplit[itemCloudUrlSplit.Length - 1];
+
+                <span data-file-name="@itemFileName" data-cloud-url="@itemCloudUrl" hidden></span>
+            }
+        </div>
+        <header class="page-thread-heading d-flex justify-content-start">
+            <div class="page-thread-heading-picture">
+                <img src="@thread.Community.ThumbnailPhoto.CloudUrl" width="45px" height="45px">
+            </div>
+            <div class="page-thread-heading-category h5 ms-3 mt-1"><a class="plain-link" href="/Community/Details?communityId=@thread.Community.Id">g/@thread.Community.Name</a></div>
+            <div class="page-thread-heading-timestamp ms-3 mt-1">@thread.CreatedOn.ToString("dd/MM/yyyy HH:mm")</div>
+        </header>
+        <main class="page-thread-content mt-4">
+            <a class="plain-link" href="/Thread/Details?threadId=@thread.Id">
+                <h4 class="page-thread-content-name">@thread.Title</h4>
+                <div class="page-thread-content-preview mt-3">
+                    @Html.Raw(thread.Content)
+                </div>
+            </a>
+        </main>
+        @{
+            var groupedReactions = thread.Reactions.Aggregate(new Dictionary<string, int>(), (accumulator, utr) =>
+                    {
+                        if(!accumulator.ContainsKey(utr.Reaction.Emote.CloudUrl)) {
+                            accumulator[utr.Reaction.Emote.CloudUrl] = 0;
+                        }
+
+                        accumulator[utr.Reaction.Emote.CloudUrl]++;
+
+                        return accumulator;
+                    });
+        }
+        <div class="user-reactions-container d-flex flex-row">
+            @foreach(var reaction in groupedReactions.OrderByDescending(gr => gr.Value)) {
+                <div class="user-reaction d-flex justify-content-start">
+                    <img class="mt-1" src="@reaction.Key" width="15px" height="15px">
+                    <div class="ms-2">@reaction.Value</div>
+                </div>
+            }
+        </div>
+        <footer class="page-thread-footer d-flex justify-content-start">
+            <div class="page-thread-footer-reactions d-flex justify-content-start">
+                <img class="mt-1" src="~/images/reaction.svg" width="20px" height="20px">
+                <div class="ms-2">@thread.Reactions.Count</div>
+            </div>
+            <div class="page-thread-footer-comments d-flex justify-content-start ms-4">
+                <img class="mt-1" src="~/images/comment.svg" width="20px" height="20px">
+                <div class="ms-2">@thread.Comments.Count</div>
+            </div>
+            <div class="page-thread-footer-follow ms-4">
+                <img src="~/images/notification-enable.svg" width="20px" height="20px">
+                <img src="~/images/notification-disable.svg" width="20px" height="20px">
+            </div>
+            <div class="page-thread-footer-share ms-4">
+                <img src="~/images/share.svg" width="20px" height="20px">
+            </div>
+        </footer>
+        <div class="reactions-container d-none flex-row">
+            <span hidden class="thread-id" data-id="@thread.Id"></span>
+            @foreach (var reaction in (List<ReactionServiceModel>)ViewData["Reactions"]) 
+            {
+                <div class="reaction-emote">
+                    <span hidden class="reaction-id" data-id="@reaction.Id"></span>
+                    <img src="@reaction.Emote.CloudUrl" width="35px" height="35px" />
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<script>
+    [...document.querySelectorAll('.page-thread-content-preview')].forEach(pageThreadContent => {
+        const pageThreadElement = pageThreadContent.parentElement.parentElement.parentElement;
+        const pageThreadAttachmentsContainer = pageThreadElement.querySelector('.page-thread-attachment-container');
+        const pageThreadAttachments = [...pageThreadAttachmentsContainer.querySelectorAll('span')];
+
+        const pageThreadFigures = [...pageThreadContent.querySelectorAll('figure')];
+
+        pageThreadFigures.forEach(pageThreadFigure => {
+            const pageThreadFigureAttachmentDetails = JSON.parse(pageThreadFigure.dataset.trixAttachment);
+            
+            const correspondingAttachment = pageThreadAttachments
+                .filter(a => a.dataset.fileName === pageThreadFigureAttachmentDetails.filename)[0];
+            
+            if(correspondingAttachment) {
+                const pageThreadFigureImage = pageThreadFigure.querySelector('img');
+
+                if(pageThreadFigureImage) {
+                    pageThreadFigureImage.src = correspondingAttachment.dataset.cloudUrl;
+                }
+            }
+        });
+
+        pageThreadAttachmentsContainer.remove();
+    });
+
+    const hideAllReactions = () => {
+        [...document.querySelectorAll('.reactions-container')].forEach(r => {
+            r.classList.remove('d-none');
+            r.classList.remove('d-flex');
+            r.classList.add('d-none');
+        })
+    }
+
+    [...document.querySelectorAll('.page-thread-footer-reactions')].forEach(r => r.addEventListener('click', (e) => {
+        let targetElement = e.target;
+
+        while(![...targetElement.classList].includes('page-thread-footer') && targetElement.tagName.toLowerCase() !== 'html') {
+            targetElement = targetElement.parentElement;
+        }
+
+        if([...targetElement.nextElementSibling.classList].includes('d-flex')) {
+            targetElement.nextElementSibling.classList.remove('d-flex');
+            targetElement.nextElementSibling.classList.add('d-none');
+            return;
+        }
+
+        hideAllReactions();
+        
+        targetElement.nextElementSibling.classList.remove('d-none');
+        targetElement.nextElementSibling.classList.add('d-flex');
+    }));
+
+    [...document.querySelectorAll('.reaction-emote')].forEach(re => re.addEventListener('click', (e) => {
+        let targetElement = e.target;
+
+        while(![...targetElement.classList].includes('reaction-emote') && targetElement.tagName.toLowerCase() !== 'html') {
+            targetElement = targetElement.parentElement;
+        }
+        
+        const reactionId = targetElement.querySelector('.reaction-id').dataset.id;
+        const threadId = targetElement.parentElement.querySelector('.thread-id').dataset.id;
+
+        fetch(`/Thread/React?threadId=${threadId}&reactionId=${reactionId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then((res) => res.json())
+            .then((json) => {
+                hideAllReactions();
+                const currentReactionsCountElement = targetElement.parentElement.previousElementSibling.querySelector('.page-thread-footer-reactions div');
+                currentReactionsCountElement.textContent = Number(currentReactionsCountElement.textContent) + (json.isDeleted ? (-1) : 1);
+                const currentThreadUserReactionsContainer = targetElement.parentElement.parentElement.querySelector('.user-reactions-container');
+                const currentUserReactionImageElement = [...currentThreadUserReactionsContainer.querySelectorAll('img')].filter(i => i.src === json.reaction.emote.cloudUrl)[0];
+
+                if(currentUserReactionImageElement) {
+                    currentUserReactionImageElement.nextElementSibling.textContent = Number(currentUserReactionImageElement.nextElementSibling.textContent) + (json.isDeleted ? (-1) : 1);
+                }
+            })
+            .catch((error) => console.error(error));
+    }));
+</script>

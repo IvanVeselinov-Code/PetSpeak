@@ -1,0 +1,499 @@
+﻿@model PetSpeakThreadServiceModel
+
+<div class="page-thread d-flex flex-column">
+    <span id="@Model.Id" class="thread-id" hidden></span>
+    <div class="page-thread-attachment-container" hidden>
+        @foreach (var item in Model.Attachments)
+        {
+            var itemCloudUrl = item.CloudUrl;
+            var itemCloudUrlSplit = itemCloudUrl.Split(":");
+            var itemFileName = itemCloudUrlSplit[itemCloudUrlSplit.Length - 1];
+
+            <span data-file-name="@itemFileName" data-cloud-url="@itemCloudUrl" hidden></span>
+        }
+    </div>
+    <header class="page-thread-heading d-flex justify-content-start">
+        <div class="page-thread-heading-picture">
+            <img src="@Model.Community.ThumbnailPhoto.CloudUrl" width="45px" height="45px">
+        </div>
+        <div class="page-thread-heading-category h5 ms-3 mt-1">g/@Model.Community.Name</div>
+        <div class="page-thread-heading-timestamp ms-3 mt-1">@Model.CreatedOn.ToString("dd/MM/yyyy HH:mm")</div>
+    </header>
+    <main class="page-thread-content mt-4">
+        <h4 class="page-thread-content-name">@Model.Title</h4>
+        <div class="page-thread-content-preview mt-3">
+            @Html.Raw(Model.Content)
+        </div>
+    </main>
+    @{
+        var groupedReactions = Model.Reactions.Aggregate(new Dictionary<string, int>(), (accumulator, utr) =>
+        {
+            if (!accumulator.ContainsKey(utr.Reaction.Emote.CloudUrl))
+            {
+                accumulator[utr.Reaction.Emote.CloudUrl] = 0;
+            }
+
+            accumulator[utr.Reaction.Emote.CloudUrl]++;
+
+            return accumulator;
+        });
+    }
+    <div class="user-reactions-container d-flex flex-row">
+        @foreach (var reaction in groupedReactions.OrderByDescending(gr => gr.Value))
+        {
+            <div class="user-reaction d-flex justify-content-start">
+                <img class="mt-1" src="@reaction.Key" width="15px" height="15px">
+                <div class="ms-2">@reaction.Value</div>
+            </div>
+        }
+    </div>
+    <footer class="page-thread-footer d-flex justify-content-start">
+        <div class="page-thread-footer-reactions d-flex justify-content-start">
+            <img class="mt-1" src="~/images/reaction.svg" width="20px" height="20px">
+            <div class="ms-2">@Model.Reactions.Count</div>
+        </div>
+        <div class="page-thread-footer-comments d-flex justify-content-start ms-4">
+            <img class="mt-1" src="~/images/comment.svg" width="20px" height="20px">
+            <div class="ms-2">@Model.Comments.Count</div>
+        </div>
+        <div class="page-thread-footer-follow ms-4">
+            <img src="~/images/notification-enable.svg" width="20px" height="20px">
+            <img src="~/images/notification-disable.svg" width="20px" height="20px">
+        </div>
+        <div class="page-thread-footer-share ms-4">
+            <img src="~/images/share.svg" width="20px" height="20px">
+        </div>
+    </footer>
+    <div class="reactions-container d-none flex-row">
+        <span hidden class="thread-id" data-id="@Model.Id"></span>
+        @foreach (var reaction in (List<ReactionServiceModel>)ViewData["Reactions"])
+        {
+            <div class="reaction-emote">
+                <span hidden class="reaction-id" data-id="@reaction.Id"></span>
+                <img src="@reaction.Emote.CloudUrl" width="35px" height="35px" />
+            </div>
+        }
+    </div>
+</div>
+
+<div class="comment-input-field">
+    <textarea class="form-control" rows="1" placeholder="Post a comment..."></textarea>
+    <trix-toolbar id="my_toolbar" hidden></trix-toolbar>
+    <trix-editor toolbar="my_toolbar" input="my_input" hidden></trix-editor>
+    <div class="comment-button-holder d-none justify-content-end p-3">
+        <button class="btn btn-secondary fw-bold me-3 comment-cancel-button">Cancel</button>
+        <button class="btn btn-primary fw-bold comment-submit-button">Comment</button>
+    </div>
+</div>
+
+<div class="details-thread-comments">
+    <vc:thread-comment 
+        thread-id="@Model.Id" 
+        reactions="@((List<ReactionServiceModel>)ViewData["Reactions"])">
+    </vc:thread-comment>
+</div>
+
+<script>
+    // VARIABLES
+
+    let attachments = [];
+
+    // THREAD ATTACHMENT FUNCTIONALITIES
+
+    [...document.querySelectorAll('.page-thread-content-preview')].forEach(pageThreadContent => {
+        const pageThreadElement = pageThreadContent.parentElement.parentElement;
+        const pageThreadAttachmentsContainer = pageThreadElement.querySelector('.page-thread-attachment-container');
+        const pageThreadAttachments = [...pageThreadAttachmentsContainer.querySelectorAll('span')];
+
+        const pageThreadFigures = [...pageThreadContent.querySelectorAll('figure')];
+
+        pageThreadFigures.forEach(pageThreadFigure => {
+            const pageThreadFigureAttachmentDetails = JSON.parse(pageThreadFigure.dataset.trixAttachment);
+
+            const correspondingAttachment = pageThreadAttachments
+                .filter(a => a.dataset.fileName === pageThreadFigureAttachmentDetails.filename)[0];
+
+            if(correspondingAttachment) {
+                const pageThreadFigureImage = pageThreadFigure.querySelector('img');
+
+                if(pageThreadFigureImage) {
+                    pageThreadFigureImage.src = correspondingAttachment.dataset.cloudUrl;
+                }
+            }
+        });
+
+        pageThreadAttachmentsContainer.remove();
+    });
+
+    // THREAD REACTION FUNCTIONALITIES
+
+    const hideAllReactions = () => {
+        [...document.querySelectorAll('.reactions-container')].forEach(r => {
+            r.classList.remove('d-none');
+            r.classList.remove('d-flex');
+            r.classList.add('d-none');
+        })
+    }
+
+    document.querySelector('.page-thread-footer-reactions').addEventListener('click', (e) => {
+        let targetElement = e.target;
+
+        while(![...targetElement.classList].includes('page-thread-footer') && targetElement.tagName.toLowerCase() !== 'html') {
+            targetElement = targetElement.parentElement;
+        }
+
+        if([...targetElement.nextElementSibling.classList].includes('d-flex')) {
+            targetElement.nextElementSibling.classList.remove('d-flex');
+            targetElement.nextElementSibling.classList.add('d-none');
+            return;
+        }
+
+        hideAllReactions();
+
+        targetElement.nextElementSibling.classList.remove('d-none');
+        targetElement.nextElementSibling.classList.add('d-flex');
+    });
+
+    [...document.querySelectorAll('.reaction-emote')].forEach(re => re.addEventListener('click', (e) => {
+        let targetElement = e.target;
+
+        while(![...targetElement.classList].includes('reaction-emote') && targetElement.tagName.toLowerCase() !== 'html') {
+            targetElement = targetElement.parentElement;
+        }
+
+        const reactionId = targetElement.querySelector('.reaction-id').dataset.id;
+        const threadId = targetElement.parentElement.querySelector('.thread-id').dataset.id;
+
+        fetch(`/Thread/React?threadId=${threadId}&reactionId=${reactionId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then((res) => res.json())
+            .then((json) => {
+                hideAllReactions();
+                const currentReactionsCountElement = targetElement.parentElement.previousElementSibling.querySelector('.page-thread-footer-reactions div');
+                currentReactionsCountElement.textContent = Number(currentReactionsCountElement.textContent) + (json.isDeleted ? (-1) : 1);
+                const currentThreadUserReactionsContainer = targetElement.parentElement.parentElement.querySelector('.user-reactions-container');
+                const currentUserReactionImageElement = [...currentThreadUserReactionsContainer.querySelectorAll('img')].filter(i => i.src === json.reaction.emote.cloudUrl)[0];
+
+                if(currentUserReactionImageElement) {
+                    currentUserReactionImageElement.nextElementSibling.textContent = Number(currentUserReactionImageElement.nextElementSibling.textContent) + (json.isDeleted ? (-1) : 1);
+                }
+            })
+            .catch((error) => console.error(error));
+    }));
+
+    // COMMENT FUNCTIONALITIES
+
+    const textArea = document.querySelector('.comment-input-field textarea');
+    const trixToolbar = document.querySelector('.comment-input-field trix-toolbar');
+    const trixEditor = document.querySelector('.comment-input-field trix-editor');
+    const threadId = document.querySelector('.thread-id').id;
+
+    const showCommentActions = () => {
+        textArea.hidden = true;
+        trixToolbar.hidden = false;
+        trixEditor.hidden = false;
+        document.querySelector('.comment-button-holder').classList.remove('d-none');
+        document.querySelector('.comment-button-holder').classList.add('d-flex');
+    }
+
+    const hideCommentActions = () => {
+        textArea.hidden = false;
+        trixToolbar.hidden = true;
+        trixEditor.hidden = true;
+        document.querySelector('.comment-button-holder').classList.remove('d-flex');
+        document.querySelector('.comment-button-holder').classList.add('d-none');
+    }
+
+    const createCommentAfterRequest = (json, attachBefore, parentBefore) => {
+        const detailsThreadComment = document.createElement('div');
+        detailsThreadComment.classList.add('details-thread-comment');
+
+        const commentSpanId = document.createElement('span');
+        commentSpanId.hidden = true;
+        commentSpanId.id = json.id;
+        commentSpanId.classList.add('comment-id');
+
+        const commentHeader = document.createElement('header');
+        commentHeader.classList.add('comment-heading', 'd-flex', 'justify-content-start');
+
+        const commentHeadingUserThumbnail = document.createElement('div');
+        commentHeadingUserThumbnail.classList.add('comment-heading-user-thumbnail');
+
+        const commentHeadingImage = document.createElement('img');
+        commentHeadingImage.src = '/images/monkas.jpg';
+        commentHeadingImage.width = 45;
+        commentHeadingImage.height = 45;
+
+        commentHeadingUserThumbnail.appendChild(commentHeadingImage);
+
+        const commentHeadingUsername = document.createElement('div');
+        commentHeadingUsername.classList.add('comment-heading-username', 'h5', 'ms-3', 'mt-1');
+        commentHeadingUsername.textContent = json.createdBy.userName;
+
+        const commentHeadingTimestamp = document.createElement('div');
+        commentHeadingTimestamp.classList.add('comment-heading-timestamp', 'ms-3', 'mt-1');
+        commentHeadingTimestamp.textContent = json.createdOn;
+
+        commentHeader.appendChild(commentHeadingUserThumbnail);
+        commentHeader.appendChild(commentHeadingUsername);
+        commentHeader.appendChild(commentHeadingTimestamp);
+
+        const commentMain = document.createElement('main');
+        commentMain.classList.add('comment-content', 'mt-4');
+
+        const commentContent = document.createElement('p');
+        commentContent.classList.add('comment-content-preview', 'mt-3');
+        commentContent.textContent = json.content;
+
+        commentMain.appendChild(commentContent);
+
+        const commentFooter = document.createElement('footer');
+        commentFooter.classList.add('comment-footer', 'd-flex', 'justify-content-start');
+
+        const commentFooterReactions = document.createElement('div');
+        commentFooterReactions.classList.add('comment-footer-reactions', 'd-flex', 'justify-content-start');
+
+        const commentFooterReactionsImage = document.createElement('img');
+        commentFooterReactionsImage.classList.add('mt-1');
+        commentFooterReactionsImage.src = '/images/reaction.svg';
+        commentFooterReactionsImage.width = 20;
+        commentFooterReactionsImage.height = 20;
+
+        const commentFooterReactionsCount = document.createElement('div');
+        commentFooterReactionsCount.classList.add('ms-2');
+        commentFooterReactionsCount.textContent = 0;
+
+        commentFooterReactions.appendChild(commentFooterReactionsImage);
+        commentFooterReactions.appendChild(commentFooterReactionsCount);
+
+        const commentFooterReplies = document.createElement('div');
+        commentFooterReplies.classList.add('comment-footer-replies', 'd-flex', 'justify-content-start', 'ms-4');
+        commentFooterReplies.addEventListener('click', (e) => {
+            createReplyElement(e.target);
+        });
+
+        const commentFooterRepliesImage = document.createElement('img');
+        commentFooterRepliesImage.classList.add('mt-1');
+        commentFooterRepliesImage.src = '/images/comment.svg';
+        commentFooterRepliesImage.width = 20;
+        commentFooterRepliesImage.height = 20;
+
+        const commentFooterRepliesCount = document.createElement('div');
+        commentFooterRepliesCount.classList.add('ms-2');
+        commentFooterRepliesCount.textContent = 0;
+
+        commentFooterReplies.appendChild(commentFooterRepliesImage);
+        commentFooterReplies.appendChild(commentFooterRepliesCount);
+
+        const commentFooterShare = document.createElement('div');
+        commentFooterShare.classList.add('comment-footer-share', 'ms-4');
+
+        const commentFooterShareImage = document.createElement('img');
+        commentFooterShareImage.src = '/images/share.svg';
+        commentFooterShareImage.width = 20;
+        commentFooterShareImage.height = 20;
+
+        commentFooterShare.appendChild(commentFooterShareImage);
+
+        commentFooter.appendChild(commentFooterReactions);
+        commentFooter.appendChild(commentFooterReplies);
+        commentFooter.appendChild(commentFooterShare);
+
+        const commentRepliesContainer = document.createElement('div');
+        commentRepliesContainer.classList.add('details-thread-comment-replies');
+
+        detailsThreadComment.appendChild(commentSpanId);
+        detailsThreadComment.appendChild(commentHeader);
+        detailsThreadComment.appendChild(commentMain);
+        detailsThreadComment.appendChild(commentFooter);
+        detailsThreadComment.appendChild(commentRepliesContainer);
+
+        // If no comments currently present)
+        if(!attachBefore) {
+            parentBefore.appendChild(detailsThreadComment);
+            return;
+        }
+
+        attachBefore.before(detailsThreadComment);
+
+        attachments = [];
+    }
+
+    document.querySelector('.comment-input-field textarea').addEventListener('focusin', (e) => {
+        showCommentActions();
+    });
+
+    document.querySelector('.comment-input-field .comment-submit-button').addEventListener('click', (e) => {
+        const commentContent = trixEditor.innerHTML
+
+        const commentFormData = new FormData();
+        commentFormData.append('content', commentContent);
+
+        attachments.forEach(a => commentFormData.append('attachments', a));
+
+        // Clear
+        attachments = [];
+        trixEditor.innerHTML = '';
+        hideCommentActions();
+
+        fetch('/Thread/Comment?threadId=' + threadId, {
+            method: 'POST',
+            body: commentFormData
+        })
+            .then((res) => res.json())
+            .then((json) => createCommentAfterRequest(json, 
+                document.querySelector('.details-thread-comments .details-thread-comment:first-child'),
+                document.querySelector('.details-thread-comments')
+            ))
+            .catch((error) => console.error(error));
+
+    });
+
+    document.querySelector('.comment-input-field .comment-cancel-button').addEventListener('click', (e) => {
+        attachments = [];
+        trixEditor.innerHTML = '';
+        hideCommentActions();
+    });
+
+    // REPLY FUNCTIONALITIES
+
+    const replyButtons = document.querySelectorAll('.comment-footer-replies');
+
+    const createReplyElement = (clickedButton) => {
+        const commentReplyInputFieldContainer = document.createElement('div');
+        commentReplyInputFieldContainer.classList.add('comment-reply-input-field');
+
+        const commentReplyButtonContainer = document.createElement('div');
+        commentReplyButtonContainer.classList.add('comment-reply-button-holder', 'd-flex', 'justify-content-end', 'p-3');
+
+        const commentReplyCancelButton = document.createElement('button');
+        commentReplyCancelButton.classList.add('btn', 'btn-secondary', 'fw-bold', 'me-3', 'comment-reply-cancel-button');
+        commentReplyCancelButton.textContent = 'Cancel';
+
+        commentReplyCancelButton.addEventListener('click', (e) => {
+            commentReplyInputFieldContainer.remove();
+            attachments = [];
+        });
+
+        const commentReplySubmitButton = document.createElement('button');
+        commentReplySubmitButton.classList.add('btn', 'btn-primary', 'fw-bold', 'comment-reply-submit-button');
+        commentReplySubmitButton.textContent = 'Reply';
+
+        commentReplySubmitButton.addEventListener('click', (e) => {
+            const commentContent = e.target.parentElement.parentElement.querySelector('trix-editor').innerHTML;
+            const parentCommentId = e.target.parentElement.parentElement.parentElement.querySelector('.comment-id').id;
+
+            const commentFormData = new FormData();
+            commentFormData.append('content', commentContent);
+
+            attachments.forEach(a => commentFormData.append('attachments', a));
+
+            fetch(`/Thread/Comment?threadId=${threadId}&parentId=${parentCommentId}`, {
+                method: 'POST',
+                body: commentFormData
+            })
+                .then((res) => res.json())
+                .then((json) => {
+                    createCommentAfterRequest(json, 
+                        e.target.parentElement.parentElement.parentElement.querySelector('.details-thread-comment-replies .details-thread-comment:first-child'),
+                        e.target.parentElement.parentElement.parentElement.querySelector('.details-thread-comment-replies')
+                    )
+                    commentReplyInputFieldContainer.remove();
+                    attachments = [];
+                })
+                .catch((error) => console.error(error));
+        });
+        
+        commentReplyButtonContainer.appendChild(commentReplyCancelButton);
+        commentReplyButtonContainer.appendChild(commentReplySubmitButton);
+
+        var uniqueId = '@Guid.NewGuid().ToString()';
+
+        commentReplyInputFieldContainer.innerHTML = `
+            <trix-toolbar id="my_toolbar_${uniqueId}"></trix-toolbar>
+            <trix-editor toolbar="my_toolbar_${uniqueId}" input="my_input_${uniqueId}"></trix-editor>`;
+
+        commentReplyInputFieldContainer.appendChild(commentReplyButtonContainer);
+
+        let targetFooter = clickedButton;
+
+        while(![...targetFooter.classList].includes('comment-footer') && targetFooter.tagName.toLowerCase() !== 'html') {
+            targetFooter = targetFooter.parentElement;
+            console.log('DEBUG_LOG: iteration complete...');
+        }
+
+        targetFooter.after(commentReplyInputFieldContainer);
+    }
+
+    [...replyButtons].forEach(rb => rb.addEventListener('click', (e) => {
+        createReplyElement(e.target);
+    }));
+    
+    // REACTION FUNCTIONALITIES 
+
+    [...document.querySelectorAll('.comment-footer-reactions')].forEach(r => r.addEventListener('click', (e) => {
+        let targetElement = e.target;
+
+        while(![...targetElement.classList].includes('comment-footer') && targetElement.tagName.toLowerCase() !== 'html') {
+            targetElement = targetElement.parentElement;
+        }
+
+        if([...targetElement.nextElementSibling.classList].includes('d-flex')) {
+            targetElement.nextElementSibling.classList.remove('d-flex');
+            targetElement.nextElementSibling.classList.add('d-none');
+            return;
+        }
+
+        hideAllReactions();
+
+        targetElement.nextElementSibling.classList.remove('d-none');
+        targetElement.nextElementSibling.classList.add('d-flex');
+    }));
+
+    [...document.querySelectorAll('.details-thread-comments .reaction-emote')].forEach(re => re.addEventListener('click', (e) => {
+        let targetElement = e.target;
+
+        while(![...targetElement.classList].includes('reaction-emote') && targetElement.tagName.toLowerCase() !== 'html') {
+            targetElement = targetElement.parentElement;
+        }
+
+        const reactionId = targetElement.querySelector('.reaction-id').dataset.id;
+        const commentId = targetElement.parentElement.querySelector('.comment-id').dataset.id;
+
+        fetch(`/Comment/React?commentId=${commentId}&reactionId=${reactionId}`, {
+            method: 'POST',
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then((res) => res.json())
+            .then((json) => {
+                hideAllReactions();
+                const currentReactionsCountElement = targetElement.parentElement.previousElementSibling.querySelector('.comment-footer-reactions div');
+                currentReactionsCountElement.textContent = Number(currentReactionsCountElement.textContent) + (json.isDeleted ? (-1) : 1);
+                const currentCommentUserReactionsContainer = targetElement.parentElement.parentElement.querySelector('.user-reactions-container');
+                const currentCommmentUserReactionImageElement = [...currentCommentUserReactionsContainer.querySelectorAll('img')].filter(i => i.src === json.reaction.emote.cloudUrl)[0];
+
+                if(currentCommmentUserReactionImageElement) {
+                    currentCommmentUserReactionImageElement.nextElementSibling.textContent = Number(currentCommmentUserReactionImageElement.nextElementSibling.textContent) + (json.isDeleted ? (-1) : 1);
+                }
+            })
+            .catch((error) => console.error(error));
+    }));
+
+    document.addEventListener('trix-attachment-add', (e) => {
+        const attachment = e.attachment.file;
+
+        attachments.push(attachment);
+    });
+
+    document.addEventListener('trix-attachment-remove', (e) => {
+        const attachment = e.attachment.file;
+
+        attachments = attachments.filter(a => a.name !== attachment.name);
+    });
+</script>

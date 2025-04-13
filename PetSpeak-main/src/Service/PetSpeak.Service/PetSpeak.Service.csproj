@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\PetSpeak.Data.Models\PetSpeak.Data.Models.csproj" />
+    <ProjectReference Include="..\..\Data\PetSpeak.Data\PetSpeak.Data.csproj" />
+    <ProjectReference Include="..\PetSpeak.Service.Mappings\PetSpeak.Service.Mappings.csproj" />
+    <ProjectReference Include="..\PetSpeak.Service.Models\PetSpeak.Service.Models.csproj" />
+  </ItemGroup>
+
+</Project>
