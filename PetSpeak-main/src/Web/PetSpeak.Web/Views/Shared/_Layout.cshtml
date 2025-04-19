@@ -30,18 +30,20 @@
                         <input class="form-control" placeholder="Search threads...">
                     </div>
                 </div>
-                @if (SignInManager.IsSignedIn(User))
-                {
-                    <div id="actions" class="d-flex justify-content-end">
-                        <a href="/Thread/Create" id="post-thread-button">
-                            <img src="~/images/post.svg" width="25px" height="25px">
-                        </a>
-
-                        <div id="layout-profile">
-                        </div>
-                    </div>
-                }
             </div>
+            @if (SignInManager.IsSignedIn(User))
+            {
+                <div id="actions" class="d-flex justify-content-end">
+                    <a href="/Thread/Create" id="post-thread-button">
+                        <img src="~/images/post.svg" width="25px" height="25px">
+                    </a>
+
+                    <div id="layout-profile">
+                        <img src="~/images/PetSpeak-user.png" alt="User Profile" width="35px" height="35px" style="border-radius: 50%;" />
+                    </div>
+
+                </div>
+            }
         </header>
         <main class="d-flex justify-content-start">
             <aside id="sidebar">
@@ -54,146 +56,20 @@
                     <div class="sidebar-recent-topic-list">
                         <div class="sidebar-recent-topic d-flex justify-content-start">
                             <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                                <img src="~/images/PetSpeak-dog.png" width="45px" height="45px">
                             </div>
                             <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                                <div class="sidebar-recent-topic-category-name mt-1">g/dogs</div>
+                                <div class="sidebar-recent-topic-thread-name">Border collie is the...</div>
                             </div>
                         </div>
                         <div class="sidebar-recent-topic d-flex justify-content-start">
                             <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
+                                <img src="~/images/PetSpeak-cat.png" width="45px" height="45px">
                             </div>
                             <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
-                            </div>
-                        </div>
-                        <div class="sidebar-recent-topic d-flex justify-content-start">
-                            <div class="sidebar-recent-topic-thread-picture mt-2">
-                                <img src="~/images/monkas.jpg" width="45px" height="45px">
-                            </div>
-                            <div class="sidebar-recent-topic-thread-data ms-2">
-                                <div class="sidebar-recent-topic-category-name mt-1">g/memes</div>
-                                <div class="sidebar-recent-topic-thread-name">What do you th...</div>
+                                <div class="sidebar-recent-topic-category-name mt-1">g/cats</div>
+                                <div class="sidebar-recent-topic-thread-name">he jumped on my bal...</div>
                             </div>
                         </div>
                     </div>
@@ -207,31 +83,11 @@
                 </div>
                 <div class="sidebar-navigation-category-content">
                     <div class="sidebar-popular-tags">
-                        <div class="sidebar-popular-tag">#meme</div>
-                        <div class="sidebar-popular-tag">#cheeseburger</div>
-                        <div class="sidebar-popular-tag">#technology</div>
-                        <div class="sidebar-popular-tag">#gaming</div>
-                        <div class="sidebar-popular-tag">#fitness</div>
-                        <div class="sidebar-popular-tag">#health</div>
-                        <div class="sidebar-popular-tag">#travel</div>
-                        <div class="sidebar-popular-tag">#photography</div>
-                        <div class="sidebar-popular-tag">#food</div>
-                        <div class="sidebar-popular-tag">#programming</div>
-                        <div class="sidebar-popular-tag">#webdevelopment</div>
-                        <div class="sidebar-popular-tag">#ai</div>
-                        <div class="sidebar-popular-tag">#science</div>
-                        <div class="sidebar-popular-tag">#education</div>
-                        <div class="sidebar-popular-tag">#movies</div>
-                        <div class="sidebar-popular-tag">#music</div>
-                        <div class="sidebar-popular-tag">#sports</div>
-                        <div class="sidebar-popular-tag">#business</div>
-                        <div class="sidebar-popular-tag">#finance</div>
-                        <div class="sidebar-popular-tag">#relationships</div>
-                        <div class="sidebar-popular-tag">#parenting</div>
-                        <div class="sidebar-popular-tag">#news</div>
-                        <div class="sidebar-popular-tag">#chatgpt</div>
-                        <div class="sidebar-popular-tag">#tortila</div>
-                        <div class="sidebar-popular-tag">#dyuner</div>
+                        <div class="sidebar-popular-tag">#dogs</div>
+                        <div class="sidebar-popular-tag">#cats</div>
+                        <div class="sidebar-popular-tag">#parrots</div>
+                        <div class="sidebar-popular-tag">#rabbits</div>
+                        <div class="sidebar-popular-tag">#salmon</div>
                     </div>
                 </div>
                 <!-- sub-categories with top 25 (if existent) popular tags -->

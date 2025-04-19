@@ -12,8 +12,8 @@ using PetSpeak.Web.Data;
 namespace PetSpeak.Web.Data.Migrations
 {
     [DbContext(typeof(PetSpeakDbContext))]
-    [Migration("20250413133033_KyS")]
-    partial class KyS
+    [Migration("20250419213030_FixedImages")]
+    partial class FixedImages
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

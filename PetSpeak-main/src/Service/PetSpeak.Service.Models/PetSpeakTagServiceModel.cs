@@ -1,4 +1,5 @@
-﻿namespace PetSpeak.Service.Models
+﻿using PetSpeak.Data.Models;
+namespace PetSpeak.Service.Models
 {
     public class PetSpeakTagServiceModel : MetadataBaseServiceModel
     {

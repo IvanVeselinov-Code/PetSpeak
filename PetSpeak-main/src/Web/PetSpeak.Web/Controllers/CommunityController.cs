@@ -11,23 +11,16 @@ namespace PetSpeak.Web.Controllers
     public class CommunityController : Controller
     {
         private readonly IPetSpeakCommunityService PetSpeakCommunityService;
-
         private readonly IPetSpeakThreadService PetSpeakThreadService;
+        private readonly IReactionService ReactionService;
+        private readonly ICloudinaryService CloudinaryService;
 
-        private readonly IReactionService reactionService;
-
-        private readonly ICloudinaryService cloudinaryService;
-
-        public CommunityController(
-            IPetSpeakCommunityService PetSpeakCommunityService,
-            ICloudinaryService cloudinaryService,
-            IPetSpeakThreadService PetSpeakThreadService,
-            IReactionService reactionService)
+        public CommunityController(IPetSpeakCommunityService communityService, IPetSpeakThreadService threadService, IReactionService reactionService, ICloudinaryService cloudinaryService)
         {
-            this.PetSpeakCommunityService = PetSpeakCommunityService;
-            this.cloudinaryService = cloudinaryService;
-            this.PetSpeakThreadService = PetSpeakThreadService;
-            this.reactionService = reactionService;
+            PetSpeakCommunityService = communityService;
+            PetSpeakThreadService = threadService;
+            ReactionService = reactionService;
+            CloudinaryService = cloudinaryService;
         }
 
         [HttpGet]
@@ -37,36 +30,35 @@ namespace PetSpeak.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateConfirm(CreateCommunityModel createCommunityModel)
+        public async Task<IActionResult> CreateConfirm(CreateCommunityModel CreateCommunityModel)
         {
-            var thumbnailPhotoUrl = await this.UploadPhoto(createCommunityModel.ThumbnailPhoto);
-            var bannerPhotoUrl = await this.UploadPhoto(createCommunityModel.BannerPhoto);
+            var ThumbnailPhotoUrl = await UploadPhoto(CreateCommunityModel.ThumbnailPhoto);
+            var bannerPhotoUrl = await UploadPhoto(CreateCommunityModel.BannerPhoto);
 
-            await this.PetSpeakCommunityService.CreateAsync(new PetSpeakCommunityServiceModel
+            await PetSpeakCommunityService.CreateAsync(new PetSpeakCommunityServiceModel
             {
-                Name = createCommunityModel.Name,
-                Description = createCommunityModel.Description,
-                Tags = createCommunityModel.Tags.Select(tag => new PetSpeakTagServiceModel { Label = tag }).ToList(),
-                ThumbnailPhoto = new AttachmentServiceModel { CloudUrl = thumbnailPhotoUrl },
+                Name = CreateCommunityModel.Name,
+                Description = CreateCommunityModel.Description,
+                Tags = CreateCommunityModel.Tags.Select(tag => new PetSpeakTagServiceModel { Label = tag }).ToList(),
+                ThumbnailPhoto = new AttachmentServiceModel { CloudUrl = ThumbnailPhotoUrl },
                 BannerPhoto = new AttachmentServiceModel { CloudUrl = bannerPhotoUrl }
             });
 
-            // TODO: Redirect to Community Page
+
             return Redirect("/");
         }
 
         [HttpGet]
         public async Task<IActionResult> Details(string communityId)
         {
-            this.ViewData["Threads"] = this.PetSpeakThreadService.GetAllByCommunityId(communityId).ToList();
-            this.ViewData["Reactions"] = this.reactionService.GetAll().ToList();
-
-            return View(await this.PetSpeakCommunityService.GetByIdAsync(communityId));
+            ViewData["Threads"] = PetSpeakThreadService.GetAllByCommunityId(communityId).ToList();
+            ViewData["Reactions"] = ReactionService.GetAll().ToList();
+            return View(await PetSpeakCommunityService.GetByIdAsync(communityId));
         }
-            
+
         private async Task<string> UploadPhoto(IFormFile photo)
         {
-            var uploadResponse = await this.cloudinaryService.UploadFile(photo);
+            var uploadResponse = await CloudinaryService.UploadFile(photo);
 
             if (uploadResponse == null)
             {

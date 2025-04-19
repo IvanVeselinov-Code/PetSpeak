@@ -1,4 +1,6 @@
-﻿namespace PetSpeak.Service.Models
+﻿
+namespace PetSpeak.Service.Models
+
 {
     public class AttachmentServiceModel : BaseServiceModel
     {

@@ -13,7 +13,7 @@ namespace PetSpeak.Service.Community
         private readonly PetSpeakTagRepository PetSpeakTagRepository;
 
         public PetSpeakCommunityService(
-            PetSpeakCommunityRepository PetSpeakCommunityRepository, 
+            PetSpeakCommunityRepository PetSpeakCommunityRepository,
             PetSpeakTagRepository PetSpeakTagRepository)
         {
             this.PetSpeakCommunityRepository = PetSpeakCommunityRepository;

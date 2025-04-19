@@ -12,8 +12,8 @@ using PetSpeak.Web.Data;
 namespace PetSpeak.Web.Data.Migrations
 {
     [DbContext(typeof(PetSpeakDbContext))]
-    [Migration("20250413132158_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20250419191653_CommunityStuff")]
+    partial class CommunityStuff
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -198,7 +198,6 @@ namespace PetSpeak.Web.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("CloudUrl")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");

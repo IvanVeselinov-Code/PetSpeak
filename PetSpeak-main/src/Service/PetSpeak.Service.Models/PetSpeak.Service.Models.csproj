@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="9.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\..\Data\PetSpeak.Data.Models\PetSpeak.Data.Models.csproj" />
+  </ItemGroup>
+
 </Project>

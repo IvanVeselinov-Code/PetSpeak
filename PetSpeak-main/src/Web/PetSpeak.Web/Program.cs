@@ -46,7 +46,6 @@ public class Program
             .AddEntityFrameworkStores<PetSpeakDbContext>();
 
         builder.Services.AddControllersWithViews();
-
         builder.Services.AddRouting();
     }
 

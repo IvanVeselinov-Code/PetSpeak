@@ -5,7 +5,7 @@
 namespace PetSpeak.Web.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class KyS : Migration
+    public partial class fixedCreatedBy : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

@@ -1,4 +1,5 @@
-﻿namespace PetSpeak.Service.Models
+﻿using PetSpeak.Data.Models;
+namespace PetSpeak.Service.Models
 {
     public class PetSpeakCommunityServiceModel : MetadataBaseServiceModel
     {
@@ -12,4 +13,5 @@
 
         public AttachmentServiceModel BannerPhoto { get; set; }
     }
+
 }
